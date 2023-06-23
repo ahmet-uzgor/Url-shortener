@@ -3,6 +3,12 @@ Created by Ahmet Üzgör with Nest.js framework;
 It is a case study solution for url shortener service ;
 You can test via below postman collection json
 
+!!NOTE: If you have windows PC then you need to change package.json scripts for start & start:dev like below
+```
+    "start": "set NODE_ENV=prod nest start",
+    "start:dev": "set NODE_ENV=dev nest start --watch",
+```
+
 ```
 {
 	"info": {
