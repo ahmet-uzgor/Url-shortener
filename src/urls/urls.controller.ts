@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Res,
+} from '@nestjs/common';
 import { ShortenUrlBody } from 'src/models/shortenUrlBody.models';
 import { UrlService } from './urls.service';
 import { StatisticsService } from 'src/statistics/statistics.service';
@@ -12,6 +20,10 @@ export class UrlController {
 
   @Post('/shortenUrl')
   shortenUrl(@Body() shortenUrlBody: ShortenUrlBody): { tinyUrl: string } {
+    if (!shortenUrlBody.url) {
+      throw new BadRequestException('Url is not given');
+    }
+
     const tinyUrl = this.urlService.shortenUrl(shortenUrlBody.url);
     const domain =
       process.env.NODE_ENV === 'dev'
@@ -25,7 +37,7 @@ export class UrlController {
   @Get('/:tinyUrl')
   visitUrl(@Param('tinyUrl') tinyUrl: string, @Res() res) {
     // it increases visit number of shortenedUrl
-    this.statisticsService.increaseVisitStatistics(tinyUrl);
+    this.statisticsService.changeVisitStatistics(tinyUrl);
 
     // it redirects the original website when a user try to visit tiny url
     return res.redirect(this.urlService.getLongUrl(tinyUrl));
